@@ -1,8 +1,6 @@
 import { createExpressEndpoints } from '@ts-rest/express';
 import { userContract } from '@expense-tracker/contract/routers/user.contract';
 import { userRouter } from '../modules/user/route/user.route';
-import { sendEmailContract } from '@expense-tracker/contract/routers/sendEmail.contract';
-import { emailRouter } from '../modules/email/routes/email.route';
 import { authContract } from '@expense-tracker/contract/routers/auth.contract';
 import { authRouter } from '../modules/auth/route/auth.route';
 
@@ -11,10 +9,7 @@ const routers = [
     contract: userContract,
     router: userRouter,
   },
-  {
-    contract: sendEmailContract,
-    router: emailRouter,
-  },
+
   {
     contract: authContract,
     router: authRouter,

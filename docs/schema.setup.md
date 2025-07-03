@@ -1,0 +1,74 @@
+# 📘 Prisma Schema Documentation
+
+This document describes the database schema defined in your Prisma schema file. It outlines all models, their fields, relations, and mappings to the underlying MySQL database.
+
+---
+
+## 🔧 Generator & Datasource
+
+```prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int               @id @default(autoincrement())
+  email            String            @unique
+  passwordHash     String
+  name             String
+  isActive         Boolean           @default(false)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  otpVerifications OTPVerification[]
+  PasswordReset    PasswordReset[]
+  Token            Token[]
+
+  @@map("users")
+}
+
+
+model OTPVerification {
+  id         Int       @id @default(autoincrement())
+  user       User      @relation(fields: [userId], references: [id])
+  userId     Int       @unique
+  otp        String
+  expiresAt  DateTime
+  verifiedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@map("user_otp_verifications")
+}
+
+model PasswordReset {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  token     String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("password_resets")
+}
+
+model Token {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  token     String   @db.VarChar(500)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, token])
+  @@map("tokens")
+}
+
+
+```
